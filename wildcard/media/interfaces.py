@@ -1,4 +1,5 @@
-from zope.interface import Interface
+from zope.component.interfaces import IObjectEvent
+from zope.interface import Interface, Attribute
 from zope import schema
 from wildcard.media import _
 from wildcard.media.config import CONVERTABLE_FORMATS
@@ -90,3 +91,10 @@ class IUtils(Interface):
 
     def image_url_quoted(self):
         pass
+    
+class IConversionFinishedEvent(IObjectEvent):
+
+    status = Attribute("The status of the conversion")
+
+
+

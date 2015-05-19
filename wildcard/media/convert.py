@@ -10,9 +10,11 @@ from tempfile import mkdtemp
 from shutil import copyfile, rmtree
 import shlex
 from wildcard.media.config import getFormat
+from wildcard.media.events import ConversionFinishedEvent
 from plone.namedfile import NamedBlobFile, NamedBlobImage
 from wildcard.media.settings import GlobalSettings
 from Products.CMFCore.utils import getToolByName
+from zope.event import notify
 
 logger = getLogger('wildcard.media')
 
@@ -70,6 +72,7 @@ and output:
         logger.info("Finished Running Command %s" % cmdformatted)
         if not output:
             if or_error:
+                import pdb; pdb.set_trace()
                 return error
         return output
 
@@ -153,7 +156,7 @@ def _convertFormat(context):
         opened.close()
     except IOError:
         logger.warn('error opening blob file')
-        return
+        return 'failure'
 
     tmpdir = mkdtemp()
     tmpfilepath = os.path.join(tmpdir, video.filename)
@@ -163,7 +166,7 @@ def _convertFormat(context):
         metadata = avprobe.info(tmpfilepath)
     except:
         logger.warn('not a valid video format')
-        return
+        return 'failure'
     context.metadata = metadata
 
     conversion_types = {
@@ -207,10 +210,12 @@ def _convertFormat(context):
     except:
         logger.warn('error getting thumbnail from video')
     rmtree(tmpdir)
+    return 'success'
 
 
 def convertVideoFormats(context):
     if not avprobe or not avconv:
         logger.warn('can not run wildcard.media conversion. No avconv')
         return
-    _convertFormat(context)
+    result = _convertFormat(context)
+    notify(ConversionFinishedEvent(context, result))
