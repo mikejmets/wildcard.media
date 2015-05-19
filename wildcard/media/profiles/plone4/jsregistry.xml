@@ -7,7 +7,7 @@
         id="++resource++wildcard-media/mediaelementjs/mediaelement-and-player.min.js"
         />
     <javascript 
-        cacheable="True" compression="safe" 
+        cacheable="True" 
         enabled="True" inline="False"
         compression="none"
         expression="python: 'theming-controlpanel-mapper' not in request.get('ACTUAL_URL', '')"
