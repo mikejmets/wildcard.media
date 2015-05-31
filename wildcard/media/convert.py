@@ -72,7 +72,7 @@ and output:
         logger.info("Finished Running Command %s" % cmdformatted)
         if not output:
             if or_error:
-                import pdb; pdb.set_trace()
+                logger.info("Finished with error %s" % error)
                 return error
         return output
 
