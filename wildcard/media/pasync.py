@@ -119,6 +119,8 @@ def queueJob(obj, func):
             logger.info('object %s already in queue for conversion' % (
                 repr(obj)))
         else:
+            logger.info('Queue object %s for conversion' % (
+                repr(obj)))
             runner.queue_it()
         return
     except:

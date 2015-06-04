@@ -1,3 +1,5 @@
+import logging
+
 from wildcard.media.async import (
     convertVideoFormats,
     uploadToYouTube,
@@ -29,8 +31,11 @@ def video_edited(video, event):
         if getattr(video, 'upload_video_to_youtube', False):
             # previously not on youtube, but now is, upload
             uploadToYouTube(video)
-        elif video.video_file and not getattr(video, 'video_converted', True):
-            convertVideoFormats(video)
+        elif video.video_file:
+            if getattr(video, 'video_converted', False):
+                logging.info('video_edited: already converted')
+            else:
+                convertVideoFormats(video)
 
 
 def video_deleted(video, event):
