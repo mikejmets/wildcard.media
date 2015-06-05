@@ -95,4 +95,13 @@
     permission="cmf.ModifyPortalContent"
     />
    
+  <browser:page
+    zcml:condition="installed plone.app.async"
+    name="wmasync-monitor"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class=".views.AsyncMonitor"
+    template="templates/async-monitor.pt"
+    permission="cmf.ModifyPortalContent"
+    layer="..interfaces.ILayer" />
+
 </configure>
