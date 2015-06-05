@@ -30,7 +30,7 @@
           Monitor Document Viewer Async Jobs
         </h1>
         
-        <p class="discreet">You have <span class="job-count" tal:content="python: len(jobs)" /> jobs yet to finish.</p>
+        <p class="discreet">There are <span class="job-count" tal:content="python: len(jobs)" /> jobs in this listing.</p>
 
         <div id="async-jobs">
           <table class="listing">
