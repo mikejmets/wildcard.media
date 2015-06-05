@@ -1,3 +1,4 @@
+from DateTime import DateTime
 from Products.Five import BrowserView
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as pmf
@@ -7,13 +8,16 @@ from z3c.form import field
 from z3c.form import button
 from plone.app.z3cform.layout import wrap_form
 from wildcard.media import _
-from wildcard.media.settings import GlobalSettings
 from wildcard.media.config import getFormat
+from wildcard.media import convert
 from wildcard.media.interfaces import IMediaEnabled
+from wildcard.media.pasync import asyncInstalled, QUOTA_NAME, isConversion
+from wildcard.media.settings import GlobalSettings
 from wildcard.media.subscribers import video_edited
 import urllib
 from plone.memoize.instance import memoize
 from zope.interface import alsoProvides
+from zope.component import getUtility
 try:
     from wildcard.media import youtube
 except ImportError:
@@ -22,7 +26,10 @@ try:
     from plone.protect.interfaces import IDisableCSRFProtection
 except ImportError:
     from zope.interface import Interface as IDisableCSRFProtection  # noqa
-
+try:
+    from plone.app.async.interfaces import IAsyncService
+except ImportError:
+    pass
 
 class MediaView(BrowserView):
 
@@ -207,55 +214,22 @@ class AsyncMonitor(BrowserView):
             quota = queue.quotas[QUOTA_NAME]
 
             for job in quota._data:
-                if isConversion(job, sitepath):
+                if isConversion(job, sitepath, convert.convertVideoFormats):
                     results.append(self.get_job_data(job, sitepath, False))
 
             jobs = [job for job in queue]
             for job in jobs:
-                if isConversion(job, sitepath):
+                if isConversion(job, sitepath, convert.convertVideoFormats):
                     results.append(self.get_job_data(job, sitepath))
 
         return results
 
     def redirect(self):
-        return self.request.response.redirect("%s/@@dvasync-monitor" % (
+        return self.request.response.redirect("%s/@@wmasync-monitor" % (
             self.context.absolute_url()))
 
     def move(self):
         pass
 
     def remove(self):
-        if self.request.get('REQUEST_METHOD', 'POST') and \
-                self.request.form.get('form.action.remove', '') == 'Remove':
-            authenticator = getMultiAdapter((self.context, self.request),
-                                            name=u"authenticator")
-            if not authenticator.verify():
-                raise Unauthorized
-
-            # find the job
-            sitepath = self.context.getPhysicalPath()
-            async = getUtility(IAsyncService)
-            queue = async.getQueues()['']
-
-            objpath = self.request.form.get('path')
-            obj = self.context.restrictedTraverse(str(objpath), None)
-            if obj is None:
-                return self.redirect()
-
-            objpath = obj.getPhysicalPath()
-
-            jobs = [job for job in queue]
-            for job in jobs:
-                if isConversion(job, sitepath) and \
-                        job.args[0] == objpath:
-                    try:
-                        queue.remove(job)
-                        settings = Settings(obj)
-                        settings.converting = False
-                    except LookupError:
-                        pass
-
-                    return self.redirect()
-
-        return self.redirect()
-
+        pass
