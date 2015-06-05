@@ -147,9 +147,9 @@ def _convertFormat(context):
     # reset these...
     context.video_file_ogv = None
     context.video_file_webm = None
+    context.video_converted = False
 
     video = context.video_file
-    context.video_converted = True
     try:
         opened = openBlob(video._blob)
         bfilepath = opened.name
@@ -210,6 +210,7 @@ def _convertFormat(context):
     except:
         logger.warn('error getting thumbnail from video')
     rmtree(tmpdir)
+    context.video_converted = True
     return 'success'
 
 
