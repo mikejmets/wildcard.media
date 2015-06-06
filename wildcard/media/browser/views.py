@@ -153,6 +153,9 @@ class Utils(MediaView):
         else:
             return url
 
+    def async_enabled(self):
+        return asyncInstalled()
+
 
 class AuthorizeGoogle(BrowserView):
 

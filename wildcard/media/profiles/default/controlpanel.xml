@@ -11,4 +11,12 @@
         <permission>Manage Portal</permission>
     </configlet>
 
+    <configlet title="Wildcard Media Async Tasks" 
+        action_id="wildcardmedia-jobs"
+        appId="wildcard.media" category="Products"
+        condition_expr="portal/@@wcmedia-utils/async_enabled"
+        url_expr="string:${portal_url}/@@wmasync-monitor"
+        visible="True" i18n:attributes="title">
+        <permission>Manage Portal</permission>
+    </configlet>
 </object>
