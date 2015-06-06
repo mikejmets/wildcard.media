@@ -27,7 +27,7 @@
 
 
         <h1 class="async-header"> 
-          Monitor Document Viewer Async Jobs
+          Monitor Wildcard Media Async Jobs
         </h1>
         
         <p class="discreet">There are <span class="job-count" tal:content="python: len(jobs)" /> jobs in this listing.</p>
