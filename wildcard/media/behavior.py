@@ -13,10 +13,11 @@ from zope.interface import Invalid, invariant
 import json
 from plone.autoform import directives as form
 from plone.app.textfield import RichText
-try:
-    from wildcard.media import youtube
-except ImportError:
-    youtube = None
+#try:
+#    from wildcard.media import youtube
+#except ImportError:
+#    youtube = None
+youtube = False
 
 
 def valid_video(namedblob):
@@ -84,8 +85,8 @@ class IVideo(model.Schema):
 
     @invariant
     def validate_videos(data):
-        if not data.video_file and not data.youtube_url:
-            raise Invalid("Must specify either a video file or youtube url")
+        if not data.video_file: #and not data.youtube_url:
+            raise Invalid("Must specify either a video file")
 
     width = schema.Int(
         title=_(u"Width"),
