@@ -12,7 +12,7 @@
     name="stream"
     for=".widget.IStreamNamedFileWidget"
     class=".widget.MediaStream"
-    permission="zope2.View"
+    permission="cmf.SetOwnPassword"
     />
 
   <browser:page
