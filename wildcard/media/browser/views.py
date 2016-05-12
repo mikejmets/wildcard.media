@@ -6,6 +6,7 @@ from wildcard.media.interfaces import IGlobalMediaSettings
 from z3c.form import form
 from z3c.form import field
 from z3c.form import button
+from plone import api
 from plone.app.z3cform.layout import wrap_form
 from wildcard.media import _
 from wildcard.media.config import getFormat
@@ -106,7 +107,20 @@ class Utils(MediaView):
                     'type': _type,
                     'url': base_furl + fieldname + '/@@stream'
                 })
+        for i in videos:
+            if i['type'] == 'ogg':
+                videos.remove(i)
+                videos.insert(len(videos), i)
         return videos
+
+    def other_video_formats(self):
+        current = api.user.get_current()
+        roles = api.user.get_roles(user=current)
+        if 'Manager' in roles:
+            videos = self.videos()
+            return videos
+        else:
+            return []
 
     @memoize
     def mp4_url(self):

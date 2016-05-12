@@ -45,6 +45,16 @@
                 tal:attributes="src video/youtube_url" />
     </video>
 </tal:yt>
+<br />
+<br />
+<br />
+<br />
+<div tal:repeat="video python:util.other_video_formats()">
+    <video controls >
+        <source tal:attributes="src video/url; type string:video/${video/type}"/>
+    </video>
+    <p tal:content="video/type"/>
+</div>
 </div>
 
 </div>
